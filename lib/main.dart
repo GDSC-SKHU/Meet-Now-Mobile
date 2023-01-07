@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:meetnow/view/room_list/navBar.dart';
+import 'package:meetnow/view/room_list/promiseList.dart';
 
 void main() {
   runApp(MyApp());
@@ -12,9 +14,10 @@ class MyApp extends StatelessWidget {
         body: SafeArea(
           child: Column(
             children: [
-              NavBarWidget(),
+              NavBar(),
               Divider(thickness: 1.0, color: Colors.grey),
               PromiseList(),
+              MakePromiseButton(),
             ],
           ),
         ),
@@ -24,45 +27,14 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class NavBarWidget extends StatelessWidget {
+class MakePromiseButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      alignment: Alignment.centerRight,
-      child: IconButton(
-        icon: Icon(
-          Icons.search,
-          size: 30,
-        ),
-        onPressed: () {},
-      ),
-    );
-  }
-}
-
-class PromiseList extends StatefulWidget {
-  @override
-  State<PromiseList> createState() => _PromiseListState();
-}
-
-class _PromiseListState extends State<PromiseList> {
-  List<String> items = ['Item1', 'Item2', 'Item3'];
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: ListView.separated(
-        itemCount: items.length,
-        itemBuilder: (BuildContext context, int index) {
-          return ListTile(
-            onTap: () {},
-            title: Container(child: Text(items[index])),
-          );
-        },
-        separatorBuilder: (context, index) {
-          return Divider(thickness: 1);
-        },
-      ),
+    return FloatingActionButton(
+      child: Icon(Icons.add, size: 32),
+      onPressed: () {},
+      backgroundColor: Colors.yellow,
+      foregroundColor: Colors.black,
     );
   }
 }
