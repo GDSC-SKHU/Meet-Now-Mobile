@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:meetnow/view/room_list/makePromiseButton.dart';
 import 'package:meetnow/view/room_list/navBar.dart';
 import 'package:meetnow/view/room_list/promiseList.dart';
 
@@ -10,6 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(fontFamily: 'NotoSans'),
       home: Scaffold(
         body: SafeArea(
           child: Column(
@@ -23,18 +25,6 @@ class MyApp extends StatelessWidget {
         ),
       ),
       debugShowCheckedModeBanner: false,
-    );
-  }
-}
-
-class MakePromiseButton extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return FloatingActionButton(
-      child: Icon(Icons.add, size: 32),
-      onPressed: () {},
-      backgroundColor: Colors.yellow,
-      foregroundColor: Colors.black,
     );
   }
 }
