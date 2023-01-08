@@ -61,8 +61,10 @@ class _SettingPromiseHourState extends State<SettingPromiseHour> {
                 Container(
                   height: 40,
                   alignment: Alignment.center,
-                  child:
-                      Text('${_promiseHours}', style: TextStyle(fontSize: 24)),
+                  child: Text(
+                    '${_promiseHours}',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
                   width: 100,
                   decoration: BoxDecoration(
                     border: Border(
@@ -111,6 +113,12 @@ class _SettingPromiseHourState extends State<SettingPromiseHour> {
                 ),
                 SizedBox(width: 20),
                 SelectDateForm(placeholder: '마지막 날짜'),
+                SizedBox(width: 20),
+                Icon(
+                  Icons.calendar_month_outlined,
+                  size: 45,
+                  color: Colors.yellow.shade700,
+                ),
               ],
             ),
           ],
@@ -134,11 +142,11 @@ class _SelectDateFormState extends State<SelectDateForm> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 140,
+      width: 110,
       child: TextField(
         textAlign: TextAlign.center,
         controller: dateInput,
-        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
         decoration: InputDecoration(
           hintText: '${widget.placeholder}',
         ),
