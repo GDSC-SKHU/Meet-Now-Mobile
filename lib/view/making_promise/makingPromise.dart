@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class MakingPromise extends StatelessWidget {
   @override
@@ -43,7 +44,7 @@ class _SettingPromiseHourState extends State<SettingPromiseHour> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.fromLTRB(16, 40, 0, 0),
+      padding: EdgeInsets.fromLTRB(16, 50, 0, 0),
       alignment: Alignment.centerLeft,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -52,7 +53,7 @@ class _SettingPromiseHourState extends State<SettingPromiseHour> {
             '몇 시간 짜리 약속인가요?',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
           ),
-          SizedBox(height: 16),
+          SizedBox(height: 12),
           Row(
             children: [
               Container(
@@ -90,8 +91,75 @@ class _SettingPromiseHourState extends State<SettingPromiseHour> {
                   },
                   child: Icon(Icons.remove, size: 32, color: Colors.white))
             ],
+          ),
+          SizedBox(height: 50),
+          Text(
+            '약속 기간 (최대 일주일)',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+          ),
+          SizedBox(height: 10),
+          Row(
+            children: [
+              SelectDateForm(),
+              SizedBox(width: 20),
+              Text(
+                '~',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
+              ),
+              SizedBox(width: 20),
+              SelectDateForm(),
+            ],
           )
         ],
+      ),
+    );
+  }
+}
+
+const List<String> category_map = [
+  "1월",
+  "2월",
+  "3월",
+];
+
+class SelectDateForm extends StatefulWidget {
+  @override
+  State<SelectDateForm> createState() => _SelectDateFormState();
+}
+
+class _SelectDateFormState extends State<SelectDateForm> {
+  TextEditingController dateInput = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 140,
+      child: TextField(
+        textAlign: TextAlign.center,
+        controller: dateInput,
+        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+        decoration: InputDecoration(
+          hintText: 'YYYY-MM-DD',
+        ),
+        onTap: () async {
+          DateTime? pickedDate = await showDatePicker(
+              context: context,
+              initialDate: DateTime.now(),
+              firstDate: DateTime(1950),
+              //DateTime.now() - not to allow to choose before today.
+              lastDate: DateTime(2100));
+          if (pickedDate != null) {
+            print(
+                pickedDate); //pickedDate output format => 2021-03-10 00:00:00.000
+            String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
+            print(
+                formattedDate); //formatted date output using intl package =>  2021-03-16
+            setState(() {
+              dateInput.text =
+                  formattedDate; //set output date to TextField value.
+            });
+          } else {}
+        },
       ),
     );
   }
