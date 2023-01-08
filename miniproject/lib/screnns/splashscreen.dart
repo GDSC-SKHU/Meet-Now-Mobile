@@ -31,17 +31,19 @@ class _SplashScreenState extends State<SplashScreen> {
           useMaterial3: true,
           colorScheme: lightColorScheme,
         ),
-        home: Center(
-            child:
-                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Image.asset(
-              '/Users/seohee/Desktop/mobile_study/Meet-Now-Mobile/miniproject/image/clap.png',
-              width: 100),
-          Text('지금!만나!',
-              style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.black,
-                  fontWeight: FontWeight.w700))
-        ])));
+        home: Scaffold(
+            body: Center(
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+              Image.asset(
+                  '/Users/seohee/Desktop/mobile_study/Meet-Now-Mobile/miniproject/image/clap.png',
+                  width: 100),
+              Text('지금!만나!',
+                  style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.black,
+                      fontWeight: FontWeight.w700))
+            ]))));
   }
 }

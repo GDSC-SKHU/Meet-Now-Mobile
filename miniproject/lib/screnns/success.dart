@@ -17,7 +17,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
   Widget build(BuildContext context) {
     return MaterialApp(
         theme: ThemeData(colorScheme: lightColorScheme),
-        home: Center(
+        home: Scaffold(
+            body: Center(
           child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
             const SizedBox(),
             Container(
@@ -37,7 +38,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
               ),
               child: Column(mainAxisSize: MainAxisSize.min, children: [
                 Image.asset(
-                    '/Users/seohee/Desktop/mobile_study/Meet-Now-Mobile/miniproject/image/clap.png',
+                    '/Users/seohee/Desktop/mobile_study/Meet-Now-Mobile/miniproject/image/white_clap.png',
                     width: 80),
                 Text(
                   '길동,민지,만남',
@@ -71,8 +72,9 @@ class _SuccessScreenState extends State<SuccessScreen> {
                         Navigator.push(context,
                             MaterialPageRoute(builder: (_) => ResultScreen()));
                       },
-                      style:
-                          ElevatedButton.styleFrom(minimumSize: Size(120, 40)),
+                      style: ElevatedButton.styleFrom(
+                          minimumSize: Size(120, 40),
+                          backgroundColor: Color.fromARGB(255, 255, 133, 33)),
                     ),
                     SizedBox(
                       width: 30,
@@ -91,6 +93,6 @@ class _SuccessScreenState extends State<SuccessScreen> {
               ]),
             ),
           ]),
-        ));
+        )));
   }
 }
