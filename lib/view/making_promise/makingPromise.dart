@@ -41,6 +41,8 @@ class SettingPromiseHour extends StatefulWidget {
 
 class _SettingPromiseHourState extends State<SettingPromiseHour> {
   int _promiseHours = 0;
+  String startDate = "";
+  String endDate = "";
 
   @override
   Widget build(BuildContext context) {
@@ -105,20 +107,41 @@ class _SettingPromiseHourState extends State<SettingPromiseHour> {
             SizedBox(height: 10),
             Row(
               children: [
-                SelectDateForm(placeholder: '처음 날짜'),
+                SelectDateForm(text: startDate),
                 SizedBox(width: 20),
                 Text(
                   '~',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
                 ),
                 SizedBox(width: 20),
-                SelectDateForm(placeholder: '마지막 날짜'),
+                SelectDateForm(text: endDate),
                 SizedBox(width: 20),
-                Icon(
-                  Icons.calendar_month_outlined,
-                  size: 45,
-                  color: Colors.yellow.shade700,
-                ),
+                IconButton(
+                  onPressed: () async {
+                    DateTime? pickedDate = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(1950),
+                        lastDate: DateTime(2100));
+                    if (pickedDate != null) {
+                      String formattedDate =
+                          DateFormat('yyyy-MM-dd').format(pickedDate);
+                      String pickedEndDate = DateFormat('yyyy-MM-dd')
+                          .format(pickedDate.add(Duration(days: 7)));
+                      setState(
+                        () {
+                          startDate = formattedDate;
+                          endDate = pickedEndDate;
+                        },
+                      );
+                    } else {}
+                  },
+                  icon: Icon(
+                    Icons.calendar_month_outlined,
+                    size: 35,
+                    color: Colors.yellow.shade700,
+                  ),
+                )
               ],
             ),
           ],
@@ -129,40 +152,29 @@ class _SettingPromiseHourState extends State<SettingPromiseHour> {
 }
 
 class SelectDateForm extends StatefulWidget {
-  final placeholder;
-  SelectDateForm({required this.placeholder});
+  final text;
+  SelectDateForm({required this.text});
 
   @override
   State<SelectDateForm> createState() => _SelectDateFormState();
 }
 
 class _SelectDateFormState extends State<SelectDateForm> {
-  TextEditingController dateInput = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 110,
-      child: TextField(
-        textAlign: TextAlign.center,
-        controller: dateInput,
-        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
-        decoration: InputDecoration(
-          hintText: '${widget.placeholder}',
+    return Container(
+      height: 40,
+      alignment: Alignment.center,
+      child: Text(
+        widget.text,
+        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+      ),
+      width: 100,
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(
+              width: 2, color: Colors.blueAccent, style: BorderStyle.solid),
         ),
-        onTap: () async {
-          DateTime? pickedDate = await showDatePicker(
-              context: context,
-              initialDate: DateTime.now(),
-              firstDate: DateTime(1950),
-              lastDate: DateTime(2100));
-          if (pickedDate != null) {
-            String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
-            setState(() {
-              dateInput.text = formattedDate;
-            });
-          } else {}
-        },
       ),
     );
   }
@@ -175,8 +187,8 @@ class SubmitButton extends StatelessWidget {
       alignment: Alignment.bottomCenter,
       child: Container(
         width: double.infinity,
-        height: 60,
-        padding: EdgeInsets.fromLTRB(16, 0, 16, 10),
+        height: 90,
+        padding: EdgeInsets.fromLTRB(16, 0, 16, 30),
         child: ElevatedButton(
           child: Text(
             '약속 만들기',
