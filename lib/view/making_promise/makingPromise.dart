@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:meetnow/view/time_table/success.dart';
 
 class MakingPromise extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        body: SafeArea(
-          child: Column(children: [
-            TypePromiseName(),
-            SettingPromiseHour(),
-            SubmitButton(),
-          ]),
-        ),
+    return Scaffold(
+      body: SafeArea(
+        child: Column(children: [
+          Container(
+            child: IconButton(
+                onPressed: () => {Navigator.pop(context)},
+                icon: Icon(Icons.arrow_back)),
+            alignment: Alignment.centerLeft,
+          ),
+          TypePromiseName(),
+          SettingPromiseHour(),
+          SubmitButton(),
+        ]),
       ),
-      debugShowCheckedModeBanner: false,
     );
   }
 }
@@ -23,7 +27,7 @@ class TypePromiseName extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
+      padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
       child: TextField(
         style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
         decoration: InputDecoration(
@@ -40,15 +44,15 @@ class SettingPromiseHour extends StatefulWidget {
 }
 
 class _SettingPromiseHourState extends State<SettingPromiseHour> {
-  int _promiseHours = 0;
-  String startDate = "";
-  String endDate = "";
+  int _promiseHours = 1;
+  String startDate = "2023-00-00";
+  String endDate = "2023-00-00";
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
       child: Container(
-        padding: EdgeInsets.fromLTRB(16, 50, 0, 0),
+        padding: EdgeInsets.fromLTRB(16, 40, 0, 0),
         alignment: Alignment.centerLeft,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -93,7 +97,7 @@ class _SettingPromiseHourState extends State<SettingPromiseHour> {
                         backgroundColor: Color.fromARGB(255, 11, 11, 11)),
                     onPressed: () {
                       setState(() {
-                        if (_promiseHours > 0) _promiseHours--;
+                        if (_promiseHours > 1) _promiseHours--;
                       });
                     },
                     child: Icon(Icons.remove, size: 32, color: Colors.white))
@@ -101,7 +105,7 @@ class _SettingPromiseHourState extends State<SettingPromiseHour> {
             ),
             SizedBox(height: 50),
             Text(
-              '약속 기간 (최대 일주일)',
+              '약속 기간 (일주일)',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
             ),
             SizedBox(height: 10),
@@ -169,7 +173,7 @@ class _SelectDateFormState extends State<SelectDateForm> {
         widget.text,
         style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
       ),
-      width: 100,
+      width: 110,
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
@@ -203,7 +207,15 @@ class SubmitButton extends StatelessWidget {
               ),
             ),
           ),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                settings: RouteSettings(name: 'Success'),
+                builder: (context) => SuccessScreen(),
+              ),
+            );
+          },
         ),
       ),
     );

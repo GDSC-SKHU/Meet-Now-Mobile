@@ -13,7 +13,10 @@ class MakePromiseButton extends StatelessWidget {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => MakingPromise()),
+              MaterialPageRoute(
+                settings: RouteSettings(name: '/MakingPromise'),
+                builder: (context) => MakingPromise(),
+              ),
             );
           },
           backgroundColor: Colors.yellow,
