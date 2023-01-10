@@ -13,17 +13,19 @@ class _MakingPromiseState extends State<MakingPromise> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Column(children: [
-          Container(
-            child: IconButton(
-                onPressed: () => {Navigator.pop(context)},
-                icon: Icon(Icons.arrow_back)),
-            alignment: Alignment.centerLeft,
-          ),
-          TypePromiseName(),
-          SettingPromiseHour(),
-          SubmitButton(title: title),
-        ]),
+        child: Column(
+          children: [
+            Container(
+              child: IconButton(
+                  onPressed: () => {Navigator.pop(context)},
+                  icon: Icon(Icons.arrow_back)),
+              alignment: Alignment.centerLeft,
+            ),
+            TypePromiseName(),
+            SettingPromiseHour(),
+            SubmitButton(title: title),
+          ],
+        ),
       ),
     );
   }
@@ -81,7 +83,6 @@ class _SettingPromiseHourState extends State<SettingPromiseHour> {
         padding: EdgeInsets.fromLTRB(16, 40, 0, 0),
         alignment: Alignment.centerLeft,
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               '몇 시간 짜리 약속인가요?',
@@ -220,8 +221,8 @@ class SubmitButton extends StatelessWidget {
       alignment: Alignment.bottomCenter,
       child: Container(
         width: double.infinity,
-        height: 90,
-        padding: EdgeInsets.fromLTRB(16, 0, 16, 30),
+        height: 60,
+        padding: EdgeInsets.fromLTRB(16, 0, 16, 10),
         child: ElevatedButton(
           child: Text(
             '약속 만들기',
@@ -240,7 +241,7 @@ class SubmitButton extends StatelessWidget {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                settings: RouteSettings(name: 'Success'),
+                settings: RouteSettings(name: '/Success'),
                 builder: (context) => SuccessScreen(title: title),
               ),
             );

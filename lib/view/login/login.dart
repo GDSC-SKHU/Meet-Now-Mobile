@@ -39,7 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    settings: RouteSettings(name: 'RoomListView'),
+                    settings: RouteSettings(name: '/RoomListView'),
                     builder: (_) => RoomListView(),
                   ),
                 ); //목록페이지로이동

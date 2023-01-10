@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:meetnow/view/time_table/mergeTable.dart';
+import 'package:meetnow/view/result/result.dart';
 
-class TimeTable extends StatefulWidget {
+class MergeTable extends StatefulWidget {
   final title;
-  TimeTable({required this.title});
+  MergeTable({required this.title});
 
   @override
-  State<TimeTable> createState() => _TimeTableState();
+  State<MergeTable> createState() => _MergeTableState();
 }
 
-class _TimeTableState extends State<TimeTable> {
+class _MergeTableState extends State<MergeTable> {
   var toggleIcon = Icons.sunny;
   @override
   Widget build(BuildContext context) {
@@ -21,7 +21,7 @@ class _TimeTableState extends State<TimeTable> {
               children: [
                 SizedBox(width: 20),
                 Text(
-                  widget.title,
+                  "${widget.title} 결과",
                   style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
                 ),
                 Spacer(),
@@ -45,7 +45,7 @@ class _TimeTableState extends State<TimeTable> {
             SizedBox(height: 20),
             Table(iconState: toggleIcon == Icons.sunny ? "🌞" : "🌚"),
             Grid(),
-            SubmitButton(title: widget.title),
+            SubmitButton(),
           ],
         ),
       ),
@@ -160,40 +160,70 @@ class _GridState extends State<Grid> {
 }
 
 class SubmitButton extends StatelessWidget {
-  final title;
-  SubmitButton({required this.title});
   @override
   Widget build(BuildContext context) {
     return Align(
       alignment: Alignment.bottomCenter,
-      child: Container(
-        width: double.infinity,
-        height: 60,
-        padding: EdgeInsets.fromLTRB(16, 0, 16, 10),
-        child: ElevatedButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                settings: RouteSettings(name: '/MergeTable'),
-                builder: (context) => MergeTable(title: title),
+      child: Row(
+        children: [
+          Container(
+            width: 200,
+            height: 60,
+            padding: EdgeInsets.fromLTRB(32, 0, 0, 10),
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text(
+                '시간 변경',
+                style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold),
               ),
-            );
-          },
-          child: Text(
-            '완료',
-            style: TextStyle(
-                fontSize: 20, color: Colors.black, fontWeight: FontWeight.bold),
-          ),
-          style: ButtonStyle(
-            backgroundColor: MaterialStatePropertyAll(Colors.yellow),
-            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-              RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+              style: ButtonStyle(
+                backgroundColor: MaterialStatePropertyAll(Colors.yellow),
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
               ),
             ),
           ),
-        ),
+          Spacer(),
+          Container(
+            width: 200,
+            height: 60,
+            padding: EdgeInsets.fromLTRB(0, 0, 32, 10),
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    settings: RouteSettings(name: '/Result'),
+                    builder: (context) => ResultScreen(),
+                  ),
+                );
+              },
+              child: Text(
+                '결과 보기',
+                style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold),
+              ),
+              style: ButtonStyle(
+                backgroundColor: MaterialStatePropertyAll(Colors.yellow),
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

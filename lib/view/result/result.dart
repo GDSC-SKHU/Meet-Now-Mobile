@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:meetnow/view/login/login.dart';
 import 'package:meetnow/view/scheme/color_schemes.dart';
 
 class ResultScreen extends StatefulWidget {
@@ -179,8 +178,7 @@ class _ResultScreenState extends State<ResultScreen> {
                 ElevatedButton(
                   child: (Text('약속다시잡기')),
                   onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (_) => LoginScreen()));
+                    Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(
                       minimumSize: Size(185, 45),
@@ -192,8 +190,8 @@ class _ResultScreenState extends State<ResultScreen> {
                 OutlinedButton(
                   child: Text('닫기'),
                   onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (_) => LoginScreen()));
+                    Navigator.popUntil(
+                        context, ModalRoute.withName('/RoomListView'));
                   },
                   style: OutlinedButton.styleFrom(minimumSize: Size(185, 45)),
                 )
