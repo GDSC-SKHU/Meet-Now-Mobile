@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:meetnow/view/result/result.dart';
+import 'package:meetnow/view/time_table/timeTable.dart';
 
 class SuccessScreen extends StatefulWidget {
+  final title;
+  SuccessScreen({required this.title});
   @override
   State<SuccessScreen> createState() => _SuccessScreenState();
 }
@@ -34,7 +36,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 Image.asset('assets/images/clap.png', width: 80),
                 SizedBox(height: 40),
                 Text(
-                  '길동,민지,만남',
+                  widget.title,
                   style: TextStyle(
                       fontSize: 25,
                       color: Colors.black,
@@ -69,7 +71,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => ResultScreen(),
+                            builder: (_) => TimeTable(title: widget.title),
                           ),
                         );
                       },

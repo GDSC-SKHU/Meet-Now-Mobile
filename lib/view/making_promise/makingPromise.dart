@@ -2,7 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:meetnow/view/time_table/success.dart';
 
-class MakingPromise extends StatelessWidget {
+class MakingPromise extends StatefulWidget {
+  @override
+  State<MakingPromise> createState() => _MakingPromiseState();
+}
+
+class _MakingPromiseState extends State<MakingPromise> {
+  var title = '';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,25 +22,45 @@ class MakingPromise extends StatelessWidget {
           ),
           TypePromiseName(),
           SettingPromiseHour(),
-          SubmitButton(),
+          SubmitButton(title: title),
         ]),
       ),
     );
   }
 }
 
-class TypePromiseName extends StatelessWidget {
+class TypePromiseName extends StatefulWidget {
+  @override
+  State<TypePromiseName> createState() => _TypePromiseNameState();
+}
+
+class _TypePromiseNameState extends State<TypePromiseName> {
+  final promiseController = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    _MakingPromiseState? parent =
+        context.findAncestorStateOfType<_MakingPromiseState>();
     return Container(
       padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
       child: TextField(
+        controller: promiseController,
         style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
         decoration: InputDecoration(
           hintText: '약속 이름을 입력해 주세요.',
         ),
+        onChanged: (value) {
+          parent?.setState(() {
+            parent.title = value;
+          });
+        },
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    promiseController.dispose();
+    super.dispose();
   }
 }
 
@@ -185,6 +211,9 @@ class _SelectDateFormState extends State<SelectDateForm> {
 }
 
 class SubmitButton extends StatelessWidget {
+  final title;
+  SubmitButton({required this.title});
+
   @override
   Widget build(BuildContext context) {
     return Align(
@@ -212,7 +241,7 @@ class SubmitButton extends StatelessWidget {
               context,
               MaterialPageRoute(
                 settings: RouteSettings(name: 'Success'),
-                builder: (context) => SuccessScreen(),
+                builder: (context) => SuccessScreen(title: title),
               ),
             );
           },
