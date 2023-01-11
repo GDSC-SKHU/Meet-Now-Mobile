@@ -81,8 +81,8 @@ class _SettingPromiseHourState extends State<SettingPromiseHour> {
     return Expanded(
       child: Container(
         padding: EdgeInsets.fromLTRB(16, 40, 0, 0),
-        alignment: Alignment.centerLeft,
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
               '몇 시간 짜리 약속인가요?',

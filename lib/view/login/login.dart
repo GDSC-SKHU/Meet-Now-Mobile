@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:meetnow/view/room_list/roomListView.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -7,14 +11,15 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  var userNameController = TextEditingController();
+  var name = '';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        margin: EdgeInsets.symmetric(horizontal: 40),
+        alignment: Alignment.center,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text('사용하실 이름을 입력하세요',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
@@ -23,26 +28,36 @@ class _LoginScreenState extends State<LoginScreen> {
                 height: 50,
                 margin: EdgeInsets.only(top: 20, bottom: 20),
                 child: TextFormField(
+                  controller: userNameController,
                   keyboardType: TextInputType.name,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     hintText: '이름',
                   ),
                   style: TextStyle(color: Colors.black),
+                  onChanged: (value) {
+                    setState(() {
+                      name = value;
+                    });
+                  },
                 )),
             ElevatedButton(
               child: Text(
                 "확인",
                 style: TextStyle(color: Colors.black),
               ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    settings: RouteSettings(name: '/RoomListView'),
-                    builder: (_) => RoomListView(),
-                  ),
-                ); //목록페이지로이동
+              onPressed: () async {
+                if (await getData(name)) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      settings: RouteSettings(name: '/RoomListView'),
+                      builder: (_) => RoomListView(),
+                    ),
+                  );
+                } else {
+                  showToast();
+                }
               },
               style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.yellow, minimumSize: Size(400, 50)),
@@ -52,4 +67,40 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
+}
+
+Future<bool> getData(name) async {
+  final prefs = await SharedPreferences.getInstance();
+  var jsonData = {
+    "username": name,
+  };
+  var body = jsonEncode(jsonData);
+  var response = await http.post(
+    Uri.http("sungwoo1.duckdns.org", "/signup"),
+    body: body,
+    headers: {'content-type': 'application/json', 'charset': 'utf-8'},
+  );
+
+  if (response.statusCode == 200) {
+    Map<String, dynamic> data = jsonDecode(response.body);
+    prefs.setString('username', name);
+    prefs.setString('token', data['accessToekn']);
+
+    print(prefs.getString('token'));
+    print(prefs.getString('username'));
+    return true;
+  } else {
+    return false;
+  }
+}
+
+void showToast() {
+  Fluttertoast.showToast(
+    msg: "중복된 이름입니다.",
+    gravity: ToastGravity.BOTTOM,
+    backgroundColor: Colors.redAccent,
+    fontSize: 20,
+    textColor: Colors.white,
+    toastLength: Toast.LENGTH_SHORT,
+  );
 }

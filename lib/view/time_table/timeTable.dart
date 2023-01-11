@@ -3,7 +3,8 @@ import 'package:meetnow/view/time_table/mergeTable.dart';
 
 class TimeTable extends StatefulWidget {
   final title;
-  TimeTable({required this.title});
+  final roomCode;
+  TimeTable({required this.title, required this.roomCode});
 
   @override
   State<TimeTable> createState() => _TimeTableState();

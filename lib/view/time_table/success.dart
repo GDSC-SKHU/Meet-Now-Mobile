@@ -71,7 +71,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => TimeTable(title: widget.title),
+                            builder: (_) =>
+                                TimeTable(title: widget.title, roomCode: 0110),
                           ),
                         );
                       },
