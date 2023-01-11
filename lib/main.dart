@@ -22,7 +22,8 @@ void main() => runApp(
           '/Login': (BuildContext context) => LoginScreen(),
           '/Result': (BuildContext context) => ResultScreen(),
           '/RoomListView': (BuildContext context) => RoomListView(),
-          '/Success': (BuildContext context) => SuccessScreen(title: ""),
+          '/Success': (BuildContext context) =>
+              SuccessScreen(title: "", roomCode: ""),
           '/MakingPromise': (BuildContext context) => MakingPromise(),
         },
       ),

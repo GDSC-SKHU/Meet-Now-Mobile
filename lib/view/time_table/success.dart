@@ -3,7 +3,8 @@ import 'package:meetnow/view/time_table/timeTable.dart';
 
 class SuccessScreen extends StatefulWidget {
   final title;
-  SuccessScreen({required this.title});
+  final roomCode;
+  SuccessScreen({required this.title, required this.roomCode});
   @override
   State<SuccessScreen> createState() => _SuccessScreenState();
 }
@@ -51,7 +52,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                           fontSize: 20,
                           color: Colors.black,
                           fontWeight: FontWeight.w400)),
-                  Text('0110',
+                  Text(widget.roomCode,
                       style: TextStyle(
                           fontSize: 20,
                           color: Colors.black,
@@ -68,11 +69,11 @@ class _SuccessScreenState extends State<SuccessScreen> {
                             fontSize: 16, fontWeight: FontWeight.bold),
                       )),
                       onPressed: () {
-                        Navigator.push(
+                        Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                            builder: (_) =>
-                                TimeTable(title: widget.title, roomCode: 0110),
+                            builder: (_) => TimeTable(
+                                title: widget.title, roomCode: widget.roomCode),
                           ),
                         );
                       },

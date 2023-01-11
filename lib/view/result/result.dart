@@ -21,7 +21,7 @@ class _ResultScreenState extends State<ResultScreen> {
                   fontWeight: FontWeight.w700)),
           SizedBox(height: 10),
           Container(
-              width: 400,
+              width: double.infinity,
               height: 50,
               alignment: Alignment.center,
               decoration: BoxDecoration(
@@ -51,13 +51,13 @@ class _ResultScreenState extends State<ResultScreen> {
               ])),
           SizedBox(height: 10),
           Container(
-              width: 400,
+              width: double.infinity,
               height: 50,
+              padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 color: Colors.yellow,
               ),
-              padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
               child: Row(children: [
                 Text(
                   '2  ',
@@ -140,7 +140,6 @@ class _ResultScreenState extends State<ResultScreen> {
               ])),
           SizedBox(height: 10),
           Container(
-              width: 400,
               height: 50,
               alignment: Alignment.center,
               decoration: BoxDecoration(
@@ -172,25 +171,32 @@ class _ResultScreenState extends State<ResultScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              ElevatedButton(
-                child: (Text('약속다시잡기')),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                style: ElevatedButton.styleFrom(
-                    minimumSize: Size(185, 45),
-                    backgroundColor: Color.fromARGB(255, 255, 133, 33)),
+              SizedBox(
+                width: 140,
+                height: 50,
+                child: ElevatedButton(
+                  child: (Text('약속다시잡기')),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Color.fromARGB(255, 255, 133, 33)),
+                ),
               ),
               SizedBox(
                 width: 30,
               ),
-              OutlinedButton(
-                child: Text('닫기'),
-                onPressed: () {
-                  Navigator.popUntil(
-                      context, ModalRoute.withName('/RoomListView'));
-                },
-                style: OutlinedButton.styleFrom(minimumSize: Size(185, 45)),
+              SizedBox(
+                width: 140,
+                height: 50,
+                child: OutlinedButton(
+                  child: Text('닫기'),
+                  onPressed: () {
+                    Navigator.popUntil(
+                        context, ModalRoute.withName('/RoomListView'));
+                  },
+                  style: OutlinedButton.styleFrom(),
+                ),
               )
             ],
           )

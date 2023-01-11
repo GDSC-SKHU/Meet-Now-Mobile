@@ -24,7 +24,8 @@ class _LoginScreenState extends State<LoginScreen> {
             Text('사용하실 이름을 입력하세요',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
             Container(
-                width: 400,
+                padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
+                width: double.infinity,
                 height: 50,
                 margin: EdgeInsets.only(top: 20, bottom: 20),
                 child: TextFormField(
@@ -41,31 +42,43 @@ class _LoginScreenState extends State<LoginScreen> {
                     });
                   },
                 )),
-            ElevatedButton(
-              child: Text(
-                "확인",
-                style: TextStyle(color: Colors.black),
+            Container(
+              width: double.infinity,
+              height: 50,
+              padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
+              child: ElevatedButton(
+                child: Text(
+                  "확인",
+                  style: TextStyle(color: Colors.black),
+                ),
+                onPressed: () async {
+                  if (await getData(name)) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        settings: RouteSettings(name: '/RoomListView'),
+                        builder: (_) => RoomListView(),
+                      ),
+                    );
+                  } else {
+                    showToast();
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.yellow,
+                ),
               ),
-              onPressed: () async {
-                if (await getData(name)) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      settings: RouteSettings(name: '/RoomListView'),
-                      builder: (_) => RoomListView(),
-                    ),
-                  );
-                } else {
-                  showToast();
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.yellow, minimumSize: Size(400, 50)),
             ),
           ],
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    userNameController.dispose();
+    super.dispose();
   }
 }
 
@@ -84,7 +97,7 @@ Future<bool> getData(name) async {
   if (response.statusCode == 200) {
     Map<String, dynamic> data = jsonDecode(response.body);
     prefs.setString('username', name);
-    prefs.setString('token', data['accessToekn']);
+    prefs.setString('token', data['accessToken']);
 
     print(prefs.getString('token'));
     print(prefs.getString('username'));

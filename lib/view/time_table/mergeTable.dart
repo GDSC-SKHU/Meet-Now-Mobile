@@ -167,7 +167,7 @@ class SubmitButton extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            width: 200,
+            width: 180,
             height: 60,
             padding: EdgeInsets.fromLTRB(32, 0, 0, 10),
             child: ElevatedButton(
@@ -193,7 +193,7 @@ class SubmitButton extends StatelessWidget {
           ),
           Spacer(),
           Container(
-            width: 200,
+            width: 180,
             height: 60,
             padding: EdgeInsets.fromLTRB(0, 0, 32, 10),
             child: ElevatedButton(
