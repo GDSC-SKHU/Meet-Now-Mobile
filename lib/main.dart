@@ -23,7 +23,7 @@ void main() => runApp(
           '/Result': (BuildContext context) => ResultScreen(),
           '/RoomListView': (BuildContext context) => RoomListView(),
           '/Success': (BuildContext context) =>
-              SuccessScreen(title: "", roomCode: ""),
+              SuccessScreen(title: "", roomCode: "", startDate: ""),
           '/MakingPromise': (BuildContext context) => MakingPromise(),
         },
       ),

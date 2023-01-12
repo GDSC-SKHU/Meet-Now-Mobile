@@ -17,6 +17,9 @@ class _MakingPromiseState extends State<MakingPromise> {
   var promiseHours = 0;
   var startDate = '2023-00-00';
   var endDate = '2023-00-00';
+  var startDay = '';
+  var endDay = '';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -170,10 +173,21 @@ class _SettingPromiseHourState extends State<SettingPromiseHour> {
                         () {
                           String formattedDate =
                               DateFormat('yyyy-MM-dd').format(pickedDate);
+
                           String pickedEndDate = DateFormat('yyyy-MM-dd')
-                              .format(pickedDate.add(Duration(days: 7)));
+                              .format(pickedDate.add(Duration(days: 6)));
+
+                          DateTime start = DateTime.parse(formattedDate);
+                          DateTime end = DateTime.parse(pickedEndDate);
+
                           parent.startDate = formattedDate;
                           parent.endDate = pickedEndDate;
+
+                          parent.startDay = DateFormat.EEEE().format(start);
+                          parent.endDay = DateFormat.EEEE().format(end);
+
+                          print(parent.startDay);
+                          print(parent.endDay);
                         },
                       );
                     } else {}
@@ -235,17 +249,29 @@ class SubmitButton extends StatelessWidget {
     this.startDate,
   });
 
+  var enToNum = {
+    "Sunday": "0",
+    "Monday": "1",
+    "Tuesday": "2",
+    "Wednesday": "3",
+    "Thursday": "4",
+    "Friday": "5",
+    "Saturday": "6",
+  };
+
   Future<bool> postRoomData() async {
     final prefs = await SharedPreferences.getInstance();
+    DateTime date = DateTime.parse(startDate);
+    String day = date.weekday.toString();
     var jsonData = {
       "roomName": title,
       "appointmentHour": promiseHours,
-      "startDate": startDate,
+      "startDate": enToNum[day],
       "endDate": endDate
     };
     var body = jsonEncode(jsonData);
     var response = await http.post(
-      Uri.http("sungwoo1.duckdns.org", "/rooms"),
+      Uri.http("35.230.73.173", "/rooms"),
       body: body,
       headers: {
         'Authorization': 'Bearer ${prefs.getString('token')}',
@@ -260,6 +286,7 @@ class SubmitButton extends StatelessWidget {
       print(data);
       return true;
     } else {
+      print(utf8.decode(response.bodyBytes));
       return false;
     }
   }
@@ -299,8 +326,8 @@ class SubmitButton extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   settings: RouteSettings(name: '/Success'),
-                  builder: (context) =>
-                      SuccessScreen(title: title, roomCode: roomCode),
+                  builder: (context) => SuccessScreen(
+                      title: title, roomCode: roomCode, startDate: startDate),
                 ),
               );
             }

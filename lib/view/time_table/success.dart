@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:meetnow/view/room_list/roomListView.dart';
 import 'package:meetnow/view/time_table/timeTable.dart';
 
 class SuccessScreen extends StatefulWidget {
   final title;
   final roomCode;
-  SuccessScreen({required this.title, required this.roomCode});
+  final startDate;
+  SuccessScreen(
+      {required this.title, required this.roomCode, required this.startDate});
   @override
   State<SuccessScreen> createState() => _SuccessScreenState();
 }
@@ -72,8 +75,11 @@ class _SuccessScreenState extends State<SuccessScreen> {
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => TimeTable(
-                                title: widget.title, roomCode: widget.roomCode),
+                            builder: (_) => TimeTableScreen(
+                              title: widget.title,
+                              roomCode: widget.roomCode,
+                              startDate: widget.startDate,
+                            ),
                           ),
                         );
                       },
@@ -92,7 +98,13 @@ class _SuccessScreenState extends State<SuccessScreen> {
                             color: Colors.black),
                       ),
                       onPressed: () {
-                        Navigator.pop(context);
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            settings: RouteSettings(name: '/RoomListView'),
+                            builder: (context) => RoomListView(),
+                          ),
+                        );
                       },
                       style: OutlinedButton.styleFrom(
                         minimumSize: Size(120, 40),

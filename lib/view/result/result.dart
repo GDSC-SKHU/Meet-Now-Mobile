@@ -192,8 +192,7 @@ class _ResultScreenState extends State<ResultScreen> {
                 child: OutlinedButton(
                   child: Text('닫기'),
                   onPressed: () {
-                    Navigator.popUntil(
-                        context, ModalRoute.withName('/RoomListView'));
+                    Navigator.popAndPushNamed(context, '/RoomListView');
                   },
                   style: OutlinedButton.styleFrom(),
                 ),

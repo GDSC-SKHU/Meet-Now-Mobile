@@ -1,9 +1,17 @@
+import 'dart:convert';
+import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:meetnow/view/result/result.dart';
+import 'package:meetnow/model/Room.dart';
+import 'package:meetnow/view/time_table/timeTable.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 class MergeTable extends StatefulWidget {
   final title;
-  MergeTable({required this.title});
+  final roomCode;
+  final startDate;
+  MergeTable(
+      {required this.title, required this.roomCode, required this.startDate});
 
   @override
   State<MergeTable> createState() => _MergeTableState();
@@ -11,6 +19,8 @@ class MergeTable extends StatefulWidget {
 
 class _MergeTableState extends State<MergeTable> {
   var toggleIcon = Icons.sunny;
+
+  List<List<TimeTableModel>> timeTables = [[]];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,9 +53,13 @@ class _MergeTableState extends State<MergeTable> {
               ],
             ),
             SizedBox(height: 20),
-            Table(iconState: toggleIcon == Icons.sunny ? "🌞" : "🌚"),
-            Grid(),
-            SubmitButton(),
+            Grid(
+                iconState: toggleIcon == Icons.sunny ? "🌞" : "🌚",
+                roomCode: widget.roomCode,
+                timeTables: timeTables,
+                ampm: toggleIcon == Icons.sunny ? true : false,
+                startDate: widget.startDate),
+            SubmitButton(title: widget.title, timeTables: timeTables),
           ],
         ),
       ),
@@ -53,20 +67,87 @@ class _MergeTableState extends State<MergeTable> {
   }
 }
 
-class Table extends StatefulWidget {
+class Grid extends StatefulWidget {
   final iconState;
-  Table({required this.iconState});
+  final roomCode;
+  final timeTables;
+  bool ampm;
+  final startDate;
+  Grid({
+    required this.iconState,
+    required this.roomCode,
+    required this.timeTables,
+    required this.ampm,
+    required this.startDate,
+  });
 
   @override
-  State<Table> createState() => _TableState();
+  State<Grid> createState() => _GridState();
 }
 
-class _TableState extends State<Table> {
-  final dayList = ['', '일', '월', '화', '수', '목', '금', '토'];
+class _GridState extends State<Grid> {
+  final dayList = ['', "", '월', '화', '수', '목', '금', '토'];
+  var startDate = "";
+  var tableStateAM =
+      List.generate(8, (index) => List.filled(12, 0, growable: false));
+  var tableStatePM =
+      List.generate(8, (index) => List.filled(12, 0, growable: false));
+
+  @override
+  void initState() {
+    super.initState();
+    getTimeTables(widget.roomCode);
+  }
+
+  Future<bool> getTimeTables(roomCode) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    var response = await http.get(
+      Uri.http("35.230.73.173", "/timetables/rooms/${roomCode}"),
+      headers: {
+        'Authorization': 'Bearer ${prefs.getString('token')}',
+        'content-type': 'application/json',
+        'charset': 'utf-8',
+      },
+    );
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      RoomInfo room = RoomInfo.fromJson(json.decode(response.body));
+      List<List<int>> am =
+          List.generate(8, (index) => List.filled(12, 0, growable: false));
+      List<List<int>> pm =
+          List.generate(8, (index) => List.filled(12, 0, growable: false));
+      // 유저별 반복
+      for (var i in room.timeTableList) {
+        for (var j in i.timeList) {
+          if (int.parse(j.time) < 13) {
+            am[int.parse(j.date)][int.parse(j.time)] += 1;
+          } else {
+            pm[int.parse(j.date)][int.parse(j.time) - 12] += 1;
+          }
+        }
+      }
+
+      setState(() {
+        tableStateAM = am;
+        tableStatePM = pm;
+        startDate = room.startDate;
+        print(tableStateAM);
+        print("변환 됨");
+      });
+      return true;
+    }
+    return false;
+  }
 
   @override
   Widget build(BuildContext context) {
     dayList[0] = widget.iconState;
+    dayList[1] = widget.startDate;
+    for (int i = 0; i < 7; i++) {
+      dayList[i + 1] =
+          NumtoDate[((int.parse(widget.startDate) + i) % 7).toString()]!;
+    }
     List<Widget> DayList = dayList
         .map(
           (e) => Container(
@@ -77,36 +158,22 @@ class _TableState extends State<Table> {
           ),
         )
         .toList();
-    return Column(
-      children: [
-        Container(
-          padding: EdgeInsets.fromLTRB(0, 0, 10, 0),
-          child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: DayList),
-        ),
-        SizedBox(height: 10),
-      ],
-    );
-  }
-}
-
-class Grid extends StatefulWidget {
-  @override
-  State<Grid> createState() => _GridState();
-}
-
-class _GridState extends State<Grid> {
-  var tableState =
-      List.generate(8, (index) => List.filled(12, false, growable: false));
-
-  @override
-  Widget build(BuildContext context) {
     return Expanded(
       child: Container(
         alignment: Alignment.centerLeft,
         child: Column(
           children: [
+            Column(
+              children: [
+                Container(
+                  padding: EdgeInsets.fromLTRB(0, 0, 10, 0),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: DayList),
+                ),
+                SizedBox(height: 10),
+              ],
+            ),
             for (int i = 0; i < 12; i++)
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -124,28 +191,15 @@ class _GridState extends State<Grid> {
                                   fontWeight: FontWeight.bold,
                                   height: 3),
                             )
-                          : ElevatedButton(
-                              onPressed: () {
-                                setState(() {
-                                  tableState[j][i] == true
-                                      ? tableState[j][i] = false
-                                      : tableState[j][i] = true;
-                                });
-                              },
-                              child: Text(""),
-                              style: ElevatedButton.styleFrom(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(4.0),
-                                ),
-                                backgroundColor: tableState[j][i] == false
-                                    ? Colors.white
-                                    : Colors.amber,
-                                shadowColor: Colors.white,
-                                elevation: 0,
-                                side: BorderSide(
-                                  color: Colors.black54,
-                                  width: 1,
-                                ),
+                          : Container(
+                              decoration: BoxDecoration(
+                                color: widget.ampm == true
+                                    ? ColorMount[tableStateAM[j][i].toString()]
+                                    : ColorMount[tableStatePM[j][i].toString()],
+                                border:
+                                    Border.all(width: 1, color: Colors.black54),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(4)),
                               ),
                             ),
                     ),
@@ -160,70 +214,47 @@ class _GridState extends State<Grid> {
 }
 
 class SubmitButton extends StatelessWidget {
+  final timeTables;
+  final title;
+  SubmitButton({required this.timeTables, required this.title});
   @override
   Widget build(BuildContext context) {
+    _MergeTableState? parent =
+        context.findAncestorStateOfType<_MergeTableState>();
     return Align(
       alignment: Alignment.bottomCenter,
-      child: Row(
-        children: [
-          Container(
-            width: 180,
-            height: 60,
-            padding: EdgeInsets.fromLTRB(32, 0, 0, 10),
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text(
-                '시간 변경',
-                style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold),
-              ),
-              style: ButtonStyle(
-                backgroundColor: MaterialStatePropertyAll(Colors.yellow),
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
+      child: Container(
+        width: double.infinity,
+        height: 60,
+        padding: EdgeInsets.fromLTRB(16, 0, 16, 10),
+        child: ElevatedButton(
+          onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                settings: RouteSettings(name: '/TimeTable'),
+                builder: (context) => TimeTableScreen(
+                  title: title,
+                  roomCode: parent?.widget.roomCode,
+                  startDate: parent?.widget.startDate,
                 ),
+              ),
+            );
+          },
+          child: Text(
+            '시간 변경',
+            style: TextStyle(
+                fontSize: 20, color: Colors.black, fontWeight: FontWeight.bold),
+          ),
+          style: ButtonStyle(
+            backgroundColor: MaterialStatePropertyAll(Colors.yellow),
+            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
               ),
             ),
           ),
-          Spacer(),
-          Container(
-            width: 180,
-            height: 60,
-            padding: EdgeInsets.fromLTRB(0, 0, 32, 10),
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    settings: RouteSettings(name: '/Result'),
-                    builder: (context) => ResultScreen(),
-                  ),
-                );
-              },
-              child: Text(
-                '결과 보기',
-                style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold),
-              ),
-              style: ButtonStyle(
-                backgroundColor: MaterialStatePropertyAll(Colors.yellow),
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

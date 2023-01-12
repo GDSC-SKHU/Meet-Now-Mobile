@@ -1,8 +1,8 @@
 import 'dart:convert';
-
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:meetnow/model/Room.dart';
-import 'package:meetnow/view/time_table/timeTable.dart';
+import 'package:meetnow/view/time_table/mergeTable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
@@ -17,7 +17,7 @@ class _PromiseListState extends State<PromiseList> {
     final prefs = await SharedPreferences.getInstance();
 
     var response = await http.get(
-      Uri.http("sungwoo1.duckdns.org", "/rooms"),
+      Uri.http("35.230.73.173", "/rooms"),
       headers: {
         'Authorization': 'Bearer ${prefs.getString('token')}',
         'content-type': 'application/json',
@@ -52,14 +52,38 @@ class _PromiseListState extends State<PromiseList> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  settings: RouteSettings(name: '/TimeTable'),
-                  builder: (context) => TimeTable(
-                      title: items[index].roomName,
-                      roomCode: items[index].invitationCode),
+                  settings: RouteSettings(name: '/MergeTable'),
+                  builder: (context) => MergeTable(
+                    title: items[index].roomName,
+                    roomCode: items[index].invitationCode,
+                    startDate: items[index].startDate,
+                  ),
                 ),
               );
             },
-            title: Container(child: Text(items[index].roomName)),
+            title: Row(
+              children: [
+                Text(items[index].roomName, style: TextStyle(fontSize: 16)),
+                Spacer(),
+                IconButton(
+                  icon: Icon(Icons.info_outline),
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text(
+                            '방 코드는 ${items[index].invitationCode}입니다.',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                )
+              ],
+            ),
           );
         },
         separatorBuilder: (context, index) {

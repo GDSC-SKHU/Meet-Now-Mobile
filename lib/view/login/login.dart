@@ -89,7 +89,7 @@ Future<bool> getData(name) async {
   };
   var body = jsonEncode(jsonData);
   var response = await http.post(
-    Uri.http("sungwoo1.duckdns.org", "/signup"),
+    Uri.http("35.230.73.173", "/signup"),
     body: body,
     headers: {'content-type': 'application/json', 'charset': 'utf-8'},
   );
