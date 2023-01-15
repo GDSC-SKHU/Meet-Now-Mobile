@@ -132,7 +132,7 @@ class _GridState extends State<Grid> {
         tableStateAM = am;
         tableStatePM = pm;
         startDate = room.startDate;
-        print(tableStateAM);
+        print("aaaa$tableStateAM");
         print("변환 됨");
       });
       return true;
@@ -144,9 +144,15 @@ class _GridState extends State<Grid> {
   Widget build(BuildContext context) {
     dayList[0] = widget.iconState;
     dayList[1] = widget.startDate;
+
+    String day = widget.startDate;
+
+    if (widget.startDate.toString().length != 1) {
+      DateTime date = DateTime.parse(widget.startDate);
+      day = date.weekday.toString();
+    }
     for (int i = 0; i < 7; i++) {
-      dayList[i + 1] =
-          NumtoDate[((int.parse(widget.startDate) + i) % 7).toString()]!;
+      dayList[i + 1] = NumtoDate[((int.parse(day) + i) % 7).toString()]!;
     }
     List<Widget> DayList = dayList
         .map(

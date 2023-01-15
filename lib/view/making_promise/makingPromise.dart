@@ -266,8 +266,8 @@ class SubmitButton extends StatelessWidget {
     var jsonData = {
       "roomName": title,
       "appointmentHour": promiseHours,
-      "startDate": enToNum[day],
-      "endDate": endDate
+      "startDate": day,
+      "endDate": "0"
     };
     var body = jsonEncode(jsonData);
     var response = await http.post(

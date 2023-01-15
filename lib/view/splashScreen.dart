@@ -71,7 +71,7 @@ Future<bool> checkToken() async {
   final prefs = await SharedPreferences.getInstance();
   // prefs.setString('token',
   //     'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJBQ0NFU1MiLCJhdWQiOiLso7zrj5nshJ0iLCJpYXQiOjE2NzM1MTc1NzgsImV4cCI6MTY3OTUxNzU3OH0.sJk__RGIHpzBxwMcWfudph-HrFBdJERqLixOdZaz3ISxDVoJlghmdrP-LelCpXBYkftBNXs7CAvQCnnykl9ZyA');
-  // prefs.remove('token');
+  prefs.remove('token');
   if (prefs.getString('token') != null) {
     return true;
   } else {

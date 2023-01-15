@@ -156,9 +156,16 @@ class _GridState extends State<Grid> {
   Widget build(BuildContext context) {
     dayList[0] = widget.iconState;
     dayList[1] = widget.startDate;
+
+    String day = widget.startDate;
+
+    if (widget.startDate.toString().length != 1) {
+      DateTime date = DateTime.parse(widget.startDate);
+      day = date.weekday.toString();
+    }
+
     for (int i = 0; i < 7; i++) {
-      dayList[i + 1] =
-          NumtoDate[((int.parse(widget.startDate) + i) % 7).toString()]!;
+      dayList[i + 1] = NumtoDate[((int.parse(day) + i) % 7).toString()]!;
     }
     List<Widget> DayList = dayList
         .map(
@@ -280,7 +287,7 @@ class SubmitButton extends StatelessWidget {
         child: ElevatedButton(
           onPressed: () {
             postTimeTable(roomCode, parent!.tableStateAM, parent.tableStatePM,
-                ['0', '1', '2', '3', '4', '5', '6']).then(
+                ['0', '1', '2', '3', '4', '5', '6', '7']).then(
               (value) => Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
@@ -337,14 +344,14 @@ class TimeTableModel {
 Future<bool> postTimeTable(roomCode, List<List<bool>> timeTableAM, timeTablePM,
     List<String> date) async {
   List<TimeTableModel> data = [];
-  for (var i = 0; i < timeTableAM.length; i++) {
+  for (var i = 1; i < timeTableAM.length; i++) {
     for (var j = 0; j < timeTableAM[0].length; j++) {
       if (timeTableAM[i][j] == true) {
         data.add(TimeTableModel(date: date[i], time: j.toString()));
       }
     }
   }
-  for (var i = 0; i < timeTablePM.length; i++) {
+  for (var i = 1; i < timeTablePM.length; i++) {
     for (var j = 0; j < timeTablePM[0].length; j++) {
       if (timeTablePM[i][j] == true) {
         data.add(TimeTableModel(date: date[i], time: (j + 12).toString()));
@@ -354,8 +361,9 @@ Future<bool> postTimeTable(roomCode, List<List<bool>> timeTableAM, timeTablePM,
 
   final prefs = await SharedPreferences.getInstance();
   var body = json.encode(data);
+  var code = int.parse(roomCode);
   var response = await http.put(
-    Uri.http("35.230.73.173", "/timetables/rooms/${roomCode}"),
+    Uri.http("35.230.73.173", "/timetables/rooms/$code"),
     headers: {
       'Authorization': 'Bearer ${prefs.getString('token')}',
       'content-type': 'application/json',
@@ -364,7 +372,7 @@ Future<bool> postTimeTable(roomCode, List<List<bool>> timeTableAM, timeTablePM,
     body: body,
   );
 
-  if (response.statusCode == 204) {
+  if (response.statusCode > 200 && response.statusCode < 300) {
     return true;
   } else {
     print(utf8.decode(response.bodyBytes));
